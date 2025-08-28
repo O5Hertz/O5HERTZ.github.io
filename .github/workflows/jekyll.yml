@@ -1,0 +1,25 @@
+# .github/workflows/jekyll.yml
+name: Build Jekyll
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Jekyll
+        run: gem install jekyll
+      - name: Build site
+        run: jekyll build
+      - name: Deploy
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.2
+      - name: Deploy to GitHub Pages
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@example.com"
+          cd _site
+          git init
+          git add .
+          git commit -m "Deploy Jekyll site"
+          git push -f https://x-access-token:$GH_PAT@github.com/$username/$repoName.git main
