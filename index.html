@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>动态文章目录 - o5hertz.github.io</title>
+  <title>o5hertz.github.io</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -21,6 +21,9 @@
     h1 {
       text-align: center;
       color: #333;
+    }
+    #intro {
+      margin-bottom: 30px;
     }
     ul {
       list-style-type: none;
@@ -40,25 +43,21 @@
 </head>
 <body>
   <div class="container">
+    <div id="intro">这里是赫兹的小站</div>
     <h1>文章目录</h1>
     <ul id="article-list"></ul>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script>
-    // 替换为你的仓库信息
+    // GitHub API 配置
     const username = "o5hertz";
     const repoName = "o5hertz.github.io";
     const dirPath = "articles"; // 文章存储的目录
 
-    // GitHub API 请求地址
-    const apiUrl = `https://api.github.com/repos/${username}/${repoName}/contents/${dirPath}?ref=main`;
-
-    // fetch 文件列表
-    fetch(apiUrl)
-      .then(response => {
-        if (!response.ok) throw new Error("无法获取文件列表");
-        return response.json();
-      })
+    // 获取文件列表
+    fetch(`https://api.github.com/repos/${username}/${repoName}/contents/${dirPath}?ref=main`)
+      .then(response => response.json())
       .then(data => {
         const list = document.getElementById("article-list");
         data.forEach(file => {
@@ -71,10 +70,6 @@
             list.appendChild(li);
           }
         });
-      })
-      .catch(error => {
-        console.error("错误:", error);
-        document.getElementById("article-list").innerHTML = "<li>无法加载文章列表</li>";
       });
   </script>
 </body>
