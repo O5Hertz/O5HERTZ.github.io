@@ -1,1 +1,6 @@
-default_layout: post
+# _config.yml
+title: 赫兹的小站
+permalink: /:categories/:title/
+exclude:
+  - Gemfile
+  - Gemfile.lock
