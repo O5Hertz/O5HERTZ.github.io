@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>动态文章目录 - o5hertz.github.io</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background-color: #f5f5f5;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      margin: 15px 0;
+    }
+    a {
+      text-decoration: none;
+      color: #007bff;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>文章目录</h1>
+    <ul id="article-list"></ul>
+  </div>
+
+  <script>
+    // 替换为你的仓库信息
+    const username = "o5hertz";
+    const repoName = "o5hertz.github.io";
+    const dirPath = "articles"; // 文章存储的目录
+
+    // GitHub API 请求地址
+    const apiUrl = `https://api.github.com/repos/${username}/${repoName}/contents/${dirPath}?ref=main`;
+
+    // fetch 文件列表
+    fetch(apiUrl)
+      .then(response => {
+        if (!response.ok) throw new Error("无法获取文件列表");
+        return response.json();
+      })
+      .then(data => {
+        const list = document.getElementById("article-list");
+        data.forEach(file => {
+          if (file.name.endsWith(".md")) {
+            const li = document.createElement("li");
+            const link = document.createElement("a");
+            link.href = `https://o5hertz.github.io/${dirPath}/${file.name}`;
+            link.textContent = `文章：${file.name.replace(".md", "")}`;
+            li.appendChild(link);
+            list.appendChild(li);
+          }
+        });
+      })
+      .catch(error => {
+        console.error("错误:", error);
+        document.getElementById("article-list").innerHTML = "<li>无法加载文章列表</li>";
+      });
+  </script>
+</body>
+</html>
