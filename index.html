@@ -35,10 +35,6 @@
     a:hover {
       text-decoration: underline;
     }
-    #article-content {
-      margin-top: 40px;
-      border-top: 2px solid #ccc;
-    }
   </style>
 </head>
 <body>
@@ -48,16 +44,15 @@
     <ul id="article-list"></ul>
   </div>
 
-  <!-- 引入marked.js -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script>
-    // 替换为你的仓库信息
     const username = "o5hertz";
     const repoName = "o5hertz.github.io";
-    const dirPath = "articles"; // 文章存储的目录
+    const dirPath = "articles"; // 确保所有 HTML 文件存放在此目录
 
-    // 获取文件列表
-    fetch(`https://api.github.com/repos/${username}/${repoName}/contents/${dirPath}?ref=main`)
+    const apiUrl = `https://api.github.com/repos/${username}/${repoName}/contents/${dirPath}?ref=main`;
+
+    fetch(apiUrl)
       .then(response => {
         if (!response.ok) throw new Error("无法获取文件列表");
         return response.json();
@@ -65,11 +60,12 @@
       .then(data => {
         const list = document.getElementById("article-list");
         data.forEach(file => {
-          if (file.name.endsWith(".md")) {
+          // 检测 .html 文件（如 article1.html）
+          if (file.name.endsWith(".html")) {
             const li = document.createElement("li");
             const link = document.createElement("a");
             link.href = `https://o5hertz.github.io/${dirPath}/${file.name}`;
-            link.textContent = `文章：${file.name.replace(".md", "")}`;
+            link.textContent = `文章：${file.name.replace(".html", "")}`;
             li.appendChild(link);
             list.appendChild(li);
           }
