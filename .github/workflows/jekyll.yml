@@ -1,25 +1,35 @@
-# .github/workflows/jekyll.yml
 name: Build Jekyll
-on: [push]
+on:
+  push:
+    branches:
+      - main
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install Jekyll
-        run: gem install jekyll
-      - name: Build site
-        run: jekyll build
-      - name: Deploy
+      - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.2
-      - name: Deploy to GitHub Pages
+          gemfile: Gemfile
+      - name: Install dependencies
         run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@example.com"
+          gem install bundler
+          bundle install --path vendor/bundle
+      - name: Build site
+        run: |
+          bundle exec jekyll build
+      - name: Deploy to GitHub Pages
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.2
+          gemfile: Gemfile
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
           cd _site
           git init
           git add .
           git commit -m "Deploy Jekyll site"
-          git push -f https://x-access-token:$GH_PAT@github.com/$username/$repoName.git main
+          git push -f https://x-access-token:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git main
